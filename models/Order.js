@@ -60,11 +60,20 @@ const OrderSchema = new mongoose.Schema(
 
     },
 
-    status :{
+    OrderStatus :{
       type:String,
       enum: ["active", "canceled"],
       default: "active",
 
+    },
+    canCancel :{
+      type:Boolean,
+      default: true,
+
+    },
+
+    cancelDate:{
+      type:Date,
     }
   
   },

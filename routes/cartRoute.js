@@ -14,7 +14,7 @@ const router = express.Router();
 
 // verifyToken, verifyRole
 
-router.use(verifyToken);
+router.use(verifyToken,verifyRole('user'));
 
 router.post("/", addProductToCart);
 router.get("/", getLoggedUserCart);

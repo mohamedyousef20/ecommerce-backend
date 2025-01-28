@@ -10,12 +10,14 @@ import {
   checkOutSession,
   cancelOrder,
   updatedOrderPaymentMethod,
-  deleteOrder
+  deleteOrder,
+  activeOrder
 } from "../controller/orderController.js";
 import getOrderValidator from '../utils/validator/orderValidator.js'
 
 const router = express.Router();
-router.post("/cancel", cancelOrder);
+router.patch("/cancel", cancelOrder);
+router.patch("/active", activeOrder);
 
 router.get("/check-out-session/:cartId", verifyToken, checkOutSession);
 

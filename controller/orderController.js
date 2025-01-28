@@ -65,8 +65,13 @@ export const filterObjForLoggedUser = asyncHandler(async (req, res, next) => {
 
 // cancel order
 export const cancelOrder = asyncHandler(async (req, res, next) => {
-  const order = await Order.findOne({ _id: req.body.id });
-
+  console.log(req.body.id, "ddddddddddddddd")
+  const { id } = req.body;
+  console.log(id)
+  const order = await Order.findById(id);
+  if (!order) {
+    next(new createError('No order found '))
+  }
   // get date now
   const currentDate = Date.now();
   // get createAt order to milliseconds
@@ -75,19 +80,67 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
 
 
 
-  if (currentDate - orderCreatedAt > toDayInMilliseconds) {
+  if (currentDate - orderCreatedAt >= toDayInMilliseconds) {
+
+    order.canCancel = false;
 
     next(createError('to days left '))
 
   }
 
-  order.status = "canceled";
+  order.OrderStatus = "canceled";
+  order.canCancel = false;
+  order.cancelDate = currentDate;
+
+  // delete order after one day
+  const orderCancelDate = order.cancelDate.getTime();
+  const OneDayInMilliseconds = 1 * 24 * 60 * 60 * 1000;
+
+  if (currentDate - orderCancelDate >= OneDayInMilliseconds) {
+    deleteOne(order)
+  }
+
   await order.save();
 
   res.status(200).json({ msg: "Order canceled successfully" });
 
 
 })
+
+
+// active order
+export const activeOrder = asyncHandler(async (req, res, next) => {
+  console.log('update succ')
+  const { id } = req.body;
+  console.log(id)
+  const order = await Order.findById(id);
+  if (!order) {
+    next(new createError('No order found '))
+  }
+  // get date now
+  // get createAt order to milliseconds
+  const cancelDate = order.cancelDate.getTime();
+  const oneDayInMilliseconds = 1 * 24 * 60 * 60 * 1000;
+
+
+
+  if (cancelDate - oneDayInMilliseconds >= oneDayInMilliseconds) {
+
+
+    next(new createError('One days left '))
+
+  }
+
+  order.OrderStatus = "active"; 
+  order.canCancel = true;
+  await order.save();
+
+  res.status(200).json({ msg: "Order active successfully" });
+
+
+})
+
+
 // get all orders 'admin , logged user'
 export const getAllOrders = getAllDocuments(Order);
 
@@ -96,7 +149,7 @@ export const getOrder = getOne(Order);
 
 
 export const updatedOrderPaymentMethod = asyncHandler(async (req, res, next) => {
-  console.log('req of body is',req.body)
+  console.log('req of body is', req.body)
   const { id, method } = req.body
   const order = await Order.findOne({ _id: id });
   console.log(order)
