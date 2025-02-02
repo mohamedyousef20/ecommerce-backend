@@ -7,7 +7,7 @@
   "scripts": {
     "start:Dev": " index.js",
     "start:Prod": "SETnodemon NODE_ENV=Production & nodemon index.js",
-    "vercel-build": "node index.js"
+    "vercel-build": "nodemon index.js"
   },
   "keywords": [],
     "engines": {
