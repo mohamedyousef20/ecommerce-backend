@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-
+// router.use(verifyToken)
 router.post('/register', authValidator, register);
 router.post("/login", loginValidator,login);
 router.post("/forgetPassword",forgetPasswordValidator,forgetPassword);
