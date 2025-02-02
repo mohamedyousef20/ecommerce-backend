@@ -9,6 +9,9 @@
     "start:Prod": "SET NODE_ENV=Production & nodemon index.js"
   },
   "keywords": [],
+    "engines": {
+      "node":"22.11.0"
+    },
   "author": "",
   "license": "ISC",
   "dependencies": {
