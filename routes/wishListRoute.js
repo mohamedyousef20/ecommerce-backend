@@ -12,8 +12,7 @@ const router = express.Router();
 
 
 router.use(verifyToken);
-// router.post("/",  createWishListValidator, addProductToWishList);
-router.post("/", addProductToWishList);
+router.post("/",  createWishListValidator, addProductToWishList);
 router.patch("/", removeProductFromWishList);
 // router.delete("/",  removeProductFromWishList);
 router.get("/", getWishListOfLoggedUser);

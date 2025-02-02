@@ -2,8 +2,7 @@ import User from "../models/User.js"
 import asyncHandler from "express-async-handler";
 
 export const addProductToWishList = asyncHandler(async (req, res, next) => {
-  console.log('THE BODY IS ', req.body)
-  console.log('THE USER ID ', req.user._id)
+ 
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {

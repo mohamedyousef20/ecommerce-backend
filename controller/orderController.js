@@ -6,7 +6,6 @@ import createError from "../utils/errors.js";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import { deleteOne, getAllDocuments, getOne } from "./handler.js";
-import { data } from "react-router-dom";
 
 dotenv.config();
 

@@ -15,7 +15,7 @@ const router = express.Router();
 
 
 // verifyToken, verifyRole
-// router.use(verifyToken, verifyRole('admin', 'manager'));
+router.use(verifyToken, verifyRole('admin', 'manager'));
 router.post("/", createCoupon);
 router.patch('/:id', updateCoupon);
 router.get("/:id", getCoupon);

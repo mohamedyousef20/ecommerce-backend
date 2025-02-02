@@ -132,6 +132,7 @@ ProductSchema.pre('save', async function (next) {
 
         // Upload new imageCover to Cloudinary
         const uploadResult = await uploadImageToCloudinary(this.imageCover);
+        await fs.promises.unlink(this.imageCover)
 
         if (uploadResult && uploadResult.public_id && uploadResult.secure_url) {
           this.cloudinaryId = uploadResult.public_id;
@@ -157,6 +158,7 @@ ProductSchema.pre('save', async function (next) {
         if (image.url && !image.url.includes('https')) {
           // Upload new image to Cloudinary
           const uploadResult = await uploadImageToCloudinary(image.url);
+          await fs.promises.unlink(this.image)
 
           if (uploadResult && uploadResult.public_id && uploadResult.secure_url) {
             newImages.push({

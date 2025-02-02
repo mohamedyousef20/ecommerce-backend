@@ -24,7 +24,7 @@ import User from '../../models/User.js';
           
          await User.findOne({ email: val }).then((user) => {
                 if (user) {
-                return Promise.reject(new createError('invalid email as its in user',501))
+                return Promise.reject(new createError('invalid email its belong to another user',501))
                 }
             })
         })
@@ -34,7 +34,7 @@ import User from '../../models/User.js';
         .isLength({ min: 6 }).withMessage("too short password").custom((val, { req }) => {
            
             if (val != req.body.passwordConfirm) {
-           throw (new createError('password dose not match',501))
+           throw (new createError('password dose not match',401))
             }
             return true;
         }),
@@ -53,7 +53,7 @@ export const loginValidator = [
     .custom(async (val, { req }) => {
       await User.findOne({ email: val }).then((user) => {
         if (!user) {
-          return Promise.reject(new createError("No user match", 501));
+          return Promise.reject(new createError("Wrong email or password", 400));
         }
       });
     }),

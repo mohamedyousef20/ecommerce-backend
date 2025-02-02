@@ -43,14 +43,15 @@ export const addProductToCart = asyncHandler(async (req, res, next) => {
     // product exist in cart and update quantity
     const productIndex = cart.cartItem.findIndex(
       (item) => {
-        console.log(item)
         console.log(item.product.toString())
         console.log(req.body.productId)
-        console.log(item.color)
-        console.log(req.body.color)
-        return (item.product.toString() === req.body.productId && item.color === req.body.color)
+        console.log(item.color.toString())
+        console.log(item.product.toString())
+        return (item.product.toString() === req.body.productId
+          && item.color.includes(req.body.color) )
       }
     );
+
 
     console.log(productIndex)
     // product exist in cart and update quantity
