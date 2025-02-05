@@ -14,10 +14,8 @@ const ProductSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      // trim: true,
-      // required: [true, "product name is required"],
-      // unique: [true, "product name must be unique"],
-      // maxlength: [14, "too short description"],
+      trim: true,
+      required: [true, "product name is required"],
 
 
     },
@@ -45,7 +43,7 @@ const ProductSchema = new mongoose.Schema(
 
     quantity: {
       type: Number,
-      // required: [true, "product quantity required"],
+      required: [true, "product quantity required"],
     },
     sold: {
       type: Number,
@@ -53,7 +51,7 @@ const ProductSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      // required: [true, "product price required"],
+      required: [true, "product price required"],
     },
     priceAfterDiscount: {
       type: Number,
@@ -63,7 +61,7 @@ const ProductSchema = new mongoose.Schema(
     },
     desc: {
       type: String,
-      // required: [true, "product description required"],
+      required: [true, "product description required"],
       minlength: [20, "too short description"],
     },
     ratingsAverage: {
@@ -113,17 +111,14 @@ ProductSchema.virtual("reviews", {
 
 // // create
 ProductSchema.pre('save', async function (next) {
-  console.log(this.imageCover.includes('https'), 'is image cover uploaded to cloud')
   try {
-    // Handle imageCover
-    if (this.imageCover) {
-      console.log(this.imageCover)
+    // Validate imageCover
+    if (this.imageCover && typeof this.imageCover === 'string') {
+      console.log(this.imageCover.includes('https'), 'is image cover uploaded to cloud');
+
       // Check if the image is already a Cloudinary URL
-      if (this.imageCover.includes('product')) {
-        console.log(this.imageCover.includes('product'))
-        console.log(' NO https ')
-        console.log(this.imageCover)
-        console.log(' NO https ')
+      if (!this.imageCover.includes('https')) {
+        console.log('Image is not a Cloudinary URL, uploading to Cloudinary...');
 
         // Delete old imageCover from Cloudinary if it exists
         if (this.cloudinaryId) {
@@ -132,48 +127,49 @@ ProductSchema.pre('save', async function (next) {
 
         // Upload new imageCover to Cloudinary
         const uploadResult = await uploadImageToCloudinary(this.imageCover);
-        await fs.promises.unlink(this.imageCover)
 
         if (uploadResult && uploadResult.public_id && uploadResult.secure_url) {
           this.cloudinaryId = uploadResult.public_id;
           this.imageCover = uploadResult.secure_url;
+
+          // Delete the local file after uploading to Cloudinary
+          if (fs.existsSync(this.imageCover)) {
+            await fs.promises.unlink(this.imageCover);
+          }
         } else {
           throw new Error('Failed to upload imageCover to Cloudinary');
         }
-      }
-      else {
-        console.log(' np https ')
-
-        this.images = this.imageCover;
-
+      } else {
+        console.log('Image is already a Cloudinary URL, skipping upload.');
       }
     }
 
-    // Handle array of images
-    if (this.images && this.images.length > 0) {
+    // Validate and process images array
+    if (this.images && Array.isArray(this.images) && this.images.length > 0) {
       const newImages = [];
       for (const image of this.images) {
-        console.log('1')
-        // Check if the image URL is already from Cloudinary
-        if (image.url && !image.url.includes('https')) {
+        if (image.url && typeof image.url === 'string' && !image.url.includes('https')) {
+          console.log('Uploading image to Cloudinary:', image.url);
+
           // Upload new image to Cloudinary
           const uploadResult = await uploadImageToCloudinary(image.url);
-          await fs.promises.unlink(this.image)
 
           if (uploadResult && uploadResult.public_id && uploadResult.secure_url) {
             newImages.push({
               url: uploadResult.secure_url,
               cloudinaryId: uploadResult.public_id,
             });
+
+            // Delete the local file after uploading to Cloudinary
+            if (fs.existsSync(image.url)) {
+              await fs.promises.unlink(image.url);
+            }
           } else {
             throw new Error('Failed to upload an image to Cloudinary');
           }
-        }
-        else {
-          // Keep existing Cloudinary image
-          console.log(image)
+        } else {
+          console.log('Image is already a Cloudinary URL or invalid, skipping upload:', image.url);
           newImages.push(image);
-
         }
       }
 

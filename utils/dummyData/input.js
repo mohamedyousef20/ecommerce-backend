@@ -4,7 +4,6 @@ import dotenv from 'dotenv'
 import Product from '../../models/Product.js'
 import dbConnect from '../../config/db.js'
 import asyncHandler from "express-async-handler";
-import path from 'path';
 
 dotenv.config({path:'../../.env'})
 //connect to DB

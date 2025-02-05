@@ -12,7 +12,6 @@ const router = express.Router();
 
 
 
-// verifyToken, verifyRole
 
 router.use(verifyToken,verifyRole('user'));
 

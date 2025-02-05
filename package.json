@@ -5,14 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start:Dev": " index.js",
-    "start:Prod": "SETnodemon NODE_ENV=Production & nodemon index.js",
-    "vercel-build": "nodemon index.js"
+    "start:Dev": "nodemon index.js",
+    "start:Prod": "SETnodemon NODE_ENV=Production & nodemon index.js"
   },
   "keywords": [],
-    "engines": {
-      "node":"22.11.0"
-    },
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -19,7 +19,7 @@ export const resizeImage = asyncHandler(async (req, res, next) => {
         await sharp(req.files.imageCover[0].buffer)
             .resize(1200, 1300)
             .toFormat("jpeg")
-            .jpeg({ quality: 90 })
+            .jpeg({ quality: 100 })
             .toFile(`${fileName}`);
 
         req.body.imageCover = fileName;
@@ -36,7 +36,7 @@ export const resizeImage = asyncHandler(async (req, res, next) => {
             await sharp(img.buffer)
                 .resize(1200, 1300)
                 .toFormat("jpeg")
-                .jpeg({ quality: 90 })
+                .jpeg({ quality: 100 })
                 .toFile(`${fileName}`);
             
             req.body.images.push({

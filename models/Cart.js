@@ -24,6 +24,15 @@ const CartSchema = new mongoose.Schema({
   },
 });
 
+CartSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: "cartItem.product",
+    select: "imageCover name  " 
+  });
+  next();
+});
+
+
 
 
 export default mongoose.model('Cart',CartSchema)
